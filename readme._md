@@ -1,0 +1,302 @@
+# Purchase Invoice Analysis - Data Science Internship Assignment
+**AINextBill Technology Private Limited**
+
+---
+
+## 📌 Project Overview
+
+This project analyzes **real purchase invoice data** from a mid-sized Indian company to understand expense behavior, identify GST compliance patterns, and generate actionable insights for AI-powered accounting software.
+
+**Assignment Goal:** Build a data science approach to expense trend analysis that would power a CFO dashboard and automated compliance alerts.
+
+---
+
+## 📊 Dataset Description
+
+### Source
+- **File:** `purchase_invoices_dataset.xlsx`
+- **Records:** 1,500 purchase invoices
+- **Period:** February 2024 - January 2026 (24 months)
+- **Total Spend:** ₹58+ crores
+
+### Key Columns
+| Column | Description | Type |
+|--------|-------------|------|
+| `invoice_id` | Unique invoice identifier | String |
+| `invoice_date` | Transaction date | Date (stored as string) |
+| `vendor_name` | Supplier name | String |
+| `expense_category` | Type of expense | String |
+| `invoice_amount` | Base amount (excluding GST) | Float |
+| `gst_rate` | GST percentage (0, 5, 12, 18) | Integer |
+| `gst_amount` | GST value | Float |
+| `total_amount` | Final payable amount | Float |
+| `payment_mode` | Bank Transfer/UPI/Credit/Cash | String |
+| `invoice_description` | Purchase order details | String |
+
+### Business Context
+The company operates in **manufacturing + technology** with:
+- Heavy raw material procurement (JSW Materials, Tata Steel, Reliance)
+- Significant software/SaaS expenses (Microsoft, SAP, AWS, Google Cloud)
+- Regular operational costs (travel, utilities, marketing)
+
+---
+
+## 🔍 Analysis Approach
+
+### 1️⃣ Data Preparation & Quality Assessment
+
+#### Data Quality Issues Identified:
+✅ **Inconsistent expense categories**
+- "Raw Material" vs "raw material" vs "RawMaterial" (10+ variants)
+- "Software" vs "software" vs "SW" vs "Software License"
+
+✅ **Missing GST amounts** (4 records)
+- Required imputation using: `gst_amount = invoice_amount × gst_rate / 100`
+
+✅ **Date format inconsistencies**
+- Stored as string, needs parsing to datetime
+- Required extraction of month, quarter, year for time-series analysis
+
+✅ **GST calculation mismatches**
+- 4 records where recorded GST ≠ calculated GST (rounding errors)
+
+#### Cleaning Steps:
+```python
+# 1. Standardize expense categories
+df['expense_category'] = df['expense_category'].str.strip().str.title()
+category_mapping = {
+    'Raw Material': ['raw material', 'Raw Materials', 'RawMaterial'],
+    'Software': ['software', 'SW', 'Software License'],
+    'Office Supplies': ['office supplies']
+}
+
+# 2. Impute missing GST
+df.loc[df['gst_amount'].isnull(), 'gst_amount'] = \
+    df.loc[df['gst_amount'].isnull(), 'invoice_amount'] * \
+    df.loc[df['gst_amount'].isnull(), 'gst_rate'] / 100
+
+# 3. Parse dates
+df['invoice_date'] = pd.to_datetime(df['invoice_date'])
+df['invoice_month'] = df['invoice_date'].dt.to_period('M')
+df['invoice_year'] = df['invoice_date'].dt.year
+```
+
+#### Derived Feature:
+**`expense_without_gst`** = `invoice_amount`
+- **Why:** GST is recoverable via Input Tax Credit (ITC), not a true expense
+- **Use Case:** Profitability analysis, budget planning (GST-exclusive)
+
+---
+
+### 2️⃣ Expense Trend Analysis
+
+#### Monthly Aggregation:
+```python
+monthly_trends = df.groupby('invoice_month').agg({
+    'invoice_amount': 'sum',
+    'gst_amount': 'sum',
+    'invoice_id': 'count'
+})
+monthly_trends['avg_invoice_value'] = \
+    monthly_trends['invoice_amount'] / monthly_trends['invoice_id']
+```
+
+#### Top 3 Expense Categories (After Cleaning):
+1. **Raw Material:** ~545 invoices (36% of transactions)
+   - Top vendors: JSW Materials, Tata Steel, Reliance Industrial
+   - **Pattern:** Volatile, bulk procurement cycles
+
+2. **Software:** ~481 invoices (32% of transactions)
+   - Top vendors: Microsoft India, SAP India, AWS, Google Cloud
+   - **Pattern:** Stable, recurring monthly/annual subscriptions
+
+3. **Travel:** 150 invoices (10% of transactions)
+   - Top vendors: MakeMyTrip Corporate, City Travels
+   - **Pattern:** Seasonal spikes (Q4 conferences, client visits)
+
+#### Stability Analysis:
+- **Coefficient of Variation (CV):** `std / mean × 100`
+- **Stable categories (CV < 30%):** Software, Utilities, Maintenance
+- **Volatile categories (CV > 60%):** Raw Material, Marketing, Travel
+
+---
+
+### 3️⃣ Key Insights
+
+#### **Insight #1: Zero-GST Software Expenses Require RCM Review**
+**Observation:**
+- 168 invoices (11%) have **0% GST rate**
+- Significant portion from Microsoft India, AWS India, Google Cloud
+
+**Accounting Significance:**
+- Likely **export of services** (cloud hosting servers outside India)
+- Requires **Reverse Charge Mechanism (RCM)** under GST Section 9(3)
+- Potential withholding tax (TDS) implications for foreign vendor payments
+
+**Product Feature:**
+```
+Alert: 0% GST on Software Expense
+Vendor: Microsoft India Pvt Ltd
+Amount: ₹2.18 lakhs
+Action Required: Verify if RCM applicable → File GSTR-2A amendment
+```
+
+---
+
+#### **Insight #2: Raw Material Procurement Follows Quarterly Cycles**
+**Observation:**
+- JSW Materials: 208 invoices, avg ₹4.5 lakhs each
+- Tata Steel: 204 invoices, avg ₹3.8 lakhs each
+- High-value invoices (₹5+ lakhs) cluster in **Q1 and Q3**
+
+**Business Implication:**
+- Indicates **planned procurement** aligned with production schedules
+- Cash flow pressure in procurement months (NET-45 payment terms)
+
+**Product Feature:**
+```
+Cash Flow Forecast (90 days ahead):
+Expected Payables: ₹2.3 crores
+Current Bank Balance: ₹1.8 crores
+Recommendation: Arrange ₹50 lakhs credit line OR negotiate 60-day terms
+```
+
+---
+
+#### **Insight #3: Payment Mode Reveals Vendor Tier Strategy**
+**Observation:**
+- **Bank Transfer (65%):** Large strategic vendors (JSW, Tata, Microsoft)
+- **UPI (22%):** Operational vendors (BPCL, travel, stationary)
+- **Credit (9%):** Key suppliers with extended terms
+- **Cash (4%):** Small, ad-hoc purchases
+
+**Product Application:**
+- Auto-classify vendors into Strategic/Operational/Tactical
+- Set payment prioritization rules based on historical mode
+
+---
+
+### 4️⃣ Simple ML Task: Vendor Spending Pattern Clustering
+
+#### Objective:
+Segment vendors into groups for better cash flow management and vendor relationship optimization.
+
+#### Approach:
+**K-Means Clustering** on vendor-level features:
+
+```python
+vendor_features = df.groupby('vendor_name').agg({
+    'invoice_amount': ['sum', 'mean', 'std', 'count'],
+    'invoice_month': 'nunique',
+    'payment_mode': lambda x: (x == 'Credit').sum() / len(x)
+})
+
+features_scaled = StandardScaler().fit_transform(
+    vendor_features[['monthly_avg_spend', 'consistency_score', 'credit_ratio']]
+)
+
+kmeans = KMeans(n_clusters=3, random_state=42)
+vendor_features['cluster'] = kmeans.fit_predict(features_scaled)
+```
+
+#### Expected Clusters:
+**Cluster 1: Strategic Partners**
+- Examples: JSW Materials, Tata Steel, Microsoft, SAP
+- High monthly spend, consistent payments, credit terms
+- **Action:** Negotiate volume discounts, extended payment terms
+
+**Cluster 2: Operational Vendors**
+- Examples: BPCL Fuel, Godrej Maintenance, MakeMyTrip
+- Moderate spend, regular frequency
+- **Action:** Standard NET-30 payment, automated invoice approval
+
+**Cluster 3: Tactical Vendors**
+- Examples: Print shops, local stationary, ad-hoc contractors
+- Low total spend, irregular purchases
+- **Action:** Quick payment processing, minimal negotiation
+
+#### Product Value:
+- **Automated payment prioritization** based on cluster
+- **Vendor relationship scoring** (track cluster transitions)
+- **Cash flow optimization** (predict monthly outflows by cluster)
+
+---
+
+## ⚠️ Limitations
+
+### Data Constraints:
+1. **Missing GST amounts** (4 records) - Imputed based on rate assumptions
+2. **No payment due dates** - Cannot analyze actual vs expected payment timing
+3. **Limited vendor context** - No contract terms, credit limits, or discount agreements
+4. **Single company dataset** - Insights may not generalize across industries
+
+### Analytical Limitations:
+1. **No budget data** - Cannot compare actual vs planned expenses
+2. **24-month window** - Insufficient for long-term seasonality detection
+3. **No GSTR-2A reconciliation** - Cannot verify vendor-uploaded GST data
+4. **No cash flow linkage** - Missing bank statement matching
+
+### Recommended Enhancements:
+- Integrate with GST portal (GSTR-2A/2B) for ITC reconciliation
+- Add vendor master data (payment terms, credit limits, GSTIN validation)
+- Include budget vs actual variance tracking
+- Link to cash flow data for payment timing analysis
+
+---
+
+## 🚀 How to Use This Analysis
+
+### For Data Science Interns:
+1. Clone this repository
+2. Run the data cleaning pipeline (`data_preparation.py`)
+3. Generate monthly expense trends (`trend_analysis.py`)
+4. Build vendor clustering model (`vendor_segmentation.py`)
+5. Create CFO dashboard mockup (optional: Streamlit/Power BI)
+
+### For Finance Teams:
+1. Review **Key Insights** section for actionable recommendations
+2. Use vendor clustering to optimize payment workflows
+3. Implement 0% GST alert system for RCM compliance
+4. Apply cash flow forecasting for procurement months
+
+---
+
+## 📂 Project Structure
+
+```
+purchase-invoice-analysis/
+├── data/
+│   └── purchase_invoices_dataset.xlsx
+├── notebooks/
+│   ├── 01_data_exploration.ipynb
+│   ├── 02_data_cleaning.ipynb
+│   ├── 03_expense_trends.ipynb
+│   └── 04_vendor_clustering.ipynb
+├── src/
+│   ├── data_preparation.py
+│   ├── trend_analysis.py
+│   └── vendor_segmentation.py
+├── outputs/
+│   ├── cleaned_data.csv
+│   ├── monthly_trends.csv
+│   └── vendor_clusters.csv
+├── ASSIGNMENT_ANALYSIS.md (Detailed analysis document)
+├── THINKING.md (Conceptual reasoning)
+└── README.md (This file)
+```
+
+---
+
+## 📧 Contact
+
+**Assignment for:** AINextBill Technology Private Limited  
+**Prepared by:** [Your Name]  
+**Date:** February 2026  
+**Questions?** Reach out to the hiring team or technical mentor.
+
+---
+
+## 📄 License
+
+This dataset is for educational and assessment purposes only.  
+Confidential invoice data - Do not redistribute.

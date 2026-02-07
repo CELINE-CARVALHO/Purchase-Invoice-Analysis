@@ -1,0 +1,285 @@
+JUPYTER NOTEBOOK EXECUTION GUIDE
+AINextBill Technology - Purchase Invoice Analysis
+
+================================================================================
+COMPLETE CELL-BY-CELL CODE FOR JUPYTER NOTEBOOK
+================================================================================
+
+Total Cells: 14
+Execution Time: ~2-3 minutes
+Output: Clean formatted results with professional visualizations
+
+================================================================================
+CELL EXECUTION ORDER
+================================================================================
+
+CELL 1: Setup and Imports
+File: notebook_cell_01_setup.py
+Purpose: Import libraries, configure environment
+Output: Confirmation message
+Time: 5 seconds
+
+CELL 2: Load and Explore Data
+File: notebook_cell_02_load.py
+Purpose: Load Excel file, initial exploration
+Output: Dataset overview, column info, missing values, first 10 records
+Time: 10 seconds
+
+CELL 3: Data Quality Analysis
+File: notebook_cell_03_quality.py
+Purpose: Identify all data quality issues
+Output: 4 major issues identified with details
+Time: 5 seconds
+
+CELL 4: Data Cleaning
+File: notebook_cell_04_cleaning.py
+Purpose: Fix all identified issues
+Output: Cleaning progress for each step
+Time: 10 seconds
+
+CELL 5: Feature Engineering
+File: notebook_cell_05_features.py
+Purpose: Create 7 derived features
+Output: Feature summary with statistics
+Time: 5 seconds
+
+CELL 6: Monthly Trends Analysis
+File: notebook_cell_06_monthly.py
+Purpose: Analyze expense trends over time
+Output: Monthly trends table + 4-panel visualization
+Time: 15 seconds
+
+CELL 7: Category Analysis
+File: notebook_cell_07_category.py
+Purpose: Deep dive into expense categories
+Output: Category breakdown + 4-panel visualization
+Time: 15 seconds
+
+CELL 8: Vendor Analysis
+File: notebook_cell_08_vendor.py
+Purpose: Analyze vendor patterns and concentration
+Output: Vendor statistics + 4-panel visualization
+Time: 15 seconds
+
+CELL 9: GST Analysis
+File: notebook_cell_09_gst.py
+Purpose: GST compliance and pattern analysis
+Output: GST insights + 4-panel visualization
+Time: 15 seconds
+
+CELL 10: Clustering - Feature Engineering
+File: notebook_cell_10_clustering_features.py
+Purpose: Create vendor-level features for clustering
+Output: 17 features created with statistics
+Time: 5 seconds
+
+CELL 11: Clustering - K-Means
+File: notebook_cell_11_clustering_kmeans.py
+Purpose: Find optimal K and perform clustering
+Output: Optimization curves + cluster assignments
+Time: 20 seconds
+
+CELL 12: Cluster Interpretation
+File: notebook_cell_12_cluster_interpretation.py
+Purpose: Analyze and label each cluster
+Output: Business interpretation and recommendations
+Time: 5 seconds
+
+CELL 13: Cluster Visualization
+File: notebook_cell_13_cluster_visualization.py
+Purpose: Visualize vendor segments
+Output: 6-panel cluster visualization
+Time: 15 seconds
+
+CELL 14: Final Summary and Export
+File: notebook_cell_14_summary.py
+Purpose: Generate summary report and export all data
+Output: Key insights + 5 CSV files saved
+Time: 10 seconds
+
+================================================================================
+HOW TO USE THESE CELLS
+================================================================================
+
+OPTION 1: Copy-Paste Each Cell
+1. Open Jupyter Notebook
+2. Create new notebook
+3. Copy content from each .py file into separate cells
+4. Run cells in order (1 through 14)
+
+OPTION 2: Load as Python Files
+1. Place all notebook_cell_*.py files in same directory as notebook
+2. In each cell, use: exec(open('notebook_cell_XX_name.py').read())
+3. Run cells sequentially
+
+OPTION 3: Create from Scratch
+1. Open each .py file
+2. Copy the code (excluding the """ comments at top)
+3. Paste into new Jupyter cells
+4. Add markdown cells with descriptions if desired
+
+================================================================================
+EXPECTED OUTPUT FORMAT
+================================================================================
+
+All outputs are formatted with:
+- Clear section headers (80-character lines)
+- No emojis (professional format)
+- Tables with proper alignment
+- Statistical summaries
+- Professional matplotlib visualizations
+- Progress indicators for each step
+
+Example output structure:
+
+================================================================================
+SECTION NAME
+================================================================================
+
+Subsection
+--------------------------------------------------------------------------------
+Data or analysis results here...
+
+Key Finding: Important insight
+Recommendation: Action item
+
+================================================================================
+
+================================================================================
+GENERATED FILES
+================================================================================
+
+CSV Files (in /mnt/user-data/outputs/):
+1. cleaned_invoices.csv - Cleaned dataset (1,500 rows, 26 columns)
+2. monthly_trends.csv - Monthly aggregations (24 rows)
+3. category_analysis.csv - Category statistics (7 categories)
+4. vendor_analysis.csv - Vendor metrics (27 vendors)
+5. vendor_clusters.csv - Clustering results (27 vendors)
+
+Visualizations (in /mnt/user-data/outputs/):
+1. monthly_trends_visualization.png - 4-panel monthly trends
+2. category_analysis_visualization.png - 4-panel category breakdown
+3. vendor_analysis_visualization.png - 4-panel vendor insights
+4. gst_analysis_visualization.png - 4-panel GST patterns
+5. clustering_optimization.png - Elbow curve and silhouette scores
+6. vendor_segmentation_visualization.png - 6-panel cluster analysis
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+Issue: Module not found error
+Solution: Run CELL 1 first (imports and setup)
+
+Issue: File not found error  
+Solution: Update file_path in CELL 2 to point to your Excel file
+
+Issue: Visualizations not showing
+Solution: Make sure matplotlib backend is configured:
+  %matplotlib inline (add to CELL 1)
+
+Issue: Memory error
+Solution: Dataset is large, try:
+  - Restart kernel
+  - Close other notebooks
+  - Use smaller sample of data
+
+Issue: Dates not parsing
+Solution: Check date format in your Excel file
+  Should be: YYYY-MM-DD format
+
+================================================================================
+CUSTOMIZATION OPTIONS
+================================================================================
+
+Change Figure Size:
+In any visualization cell, modify:
+  figsize=(16, 10) → figsize=(20, 12) for larger plots
+
+Change Color Scheme:
+Modify color definitions:
+  color='#2E86AB' → color='blue' or any hex code
+
+Adjust Clustering:
+In CELL 11, change k_values:
+  k_values = range(2, 7) → range(2, 8) to test more clusters
+
+Export to Different Location:
+In CELL 14, change output paths:
+  '/mnt/user-data/outputs/' → '/your/custom/path/'
+
+================================================================================
+PERFORMANCE TIPS
+================================================================================
+
+For faster execution:
+1. Reduce k_values range in clustering (test 2-4 instead of 2-6)
+2. Comment out visualization cells if not needed immediately
+3. Reduce DPI in savefig: dpi=300 → dpi=150
+
+For better visuals:
+1. Increase DPI: dpi=300 → dpi=600 (higher resolution)
+2. Add more colors to palette
+3. Adjust figure sizes based on screen resolution
+
+================================================================================
+EXPECTED INSIGHTS (Based on Real Data)
+================================================================================
+
+Data Quality:
+- 14 → 7 categories (standardized)
+- 4 missing GST amounts (Rs. 1.9 lakhs imputed)
+- 4 GST calculation errors (flagged)
+
+Business Insights:
+- Top Category: Raw Material (36% of spend)
+- Vendor Risk: Top 3 vendors = 45% of spend
+- GST Opportunity: 168 zero-GST invoices (11%)
+- Volatility: 12-15% average MoM change
+
+Vendor Segmentation:
+- Strategic Partners: 8 vendors, Rs. 45 crores
+- Operational Vendors: 12 vendors, Rs. 18 crores  
+- Tactical Vendors: 7 vendors, Rs. 2 crores
+
+================================================================================
+SUBMISSION CHECKLIST
+================================================================================
+
+Before submitting:
+[ ] All 14 cells executed without errors
+[ ] All 5 CSV files generated
+[ ] All 6 visualizations created
+[ ] Output is clean and professional
+[ ] No emoji characters in output
+[ ] Tables are properly aligned
+[ ] Insights are clearly stated
+
+Documentation:
+[ ] README.md updated with your name
+[ ] THINKING.md answers reviewed
+[ ] Code comments are clear
+[ ] Visualizations are labeled properly
+
+================================================================================
+CONTACT & SUPPORT
+================================================================================
+
+For questions about:
+- Code functionality: Review CODE_USAGE_GUIDE.md
+- Business context: Review THINKING.md
+- Assignment requirements: Review ASSIGNMENT_ANALYSIS.md
+- Quick tips: Review INTERN_GUIDE.md
+
+================================================================================
+
+Total Package:
+- 14 Python cells
+- ~2,200 lines of code
+- 11 output files
+- Professional format
+- Production-ready quality
+
+Good luck with your analysis!
+
+================================================================================
