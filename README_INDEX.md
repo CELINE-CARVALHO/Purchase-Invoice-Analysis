@@ -152,7 +152,6 @@ This project includes **4 comprehensive README files** covering every aspect fro
 - Option 3: Interactive Python
 
 **Page 3: Outputs**
-- 5 CSV files
 - 6 visualizations
 - Key insights preview
 
@@ -315,7 +314,7 @@ All READMEs are provided in:
 ## Quick Links
 
 **Get Started:**
-- [Quick Start Guide](README_QUICKSTART.md)
+- [Quick Start Guide](QUICKSTART.md)
 
 **Full Documentation:**
 - [Main README](README_MAIN.md)
@@ -327,9 +326,8 @@ All READMEs are provided in:
 - [Jupyter Notebook Guide](NOTEBOOK_EXECUTION_GUIDE.txt)
 
 **Conceptual Understanding:**
-- [Assignment Analysis](ASSIGNMENT_ANALYSIS.md)
 - [Thinking Document](THINKING.md)
-- [Intern Quick Reference](INTERN_GUIDE.md)
+
 
 ---
 

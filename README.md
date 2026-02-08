@@ -1,11 +1,11 @@
-# Purchase Invoice Analysis - Data Science Assignment
-**AINextBill Technology Private Limited**
+# Purchase Invoice Analysis 
+
 
 ---
 
 ## Executive Summary
 
-This project analyzes **1,500 real purchase invoices** spanning 24 months to uncover expense patterns, vendor relationships, and GST compliance opportunities for an AI-powered accounting platform. The analysis combines systematic data cleaning, statistical trend analysis, and machine learning-based vendor segmentation to deliver actionable insights for CFOs and finance teams.
+This project analyzes **1,500 generated purchase invoices** spanning 24 months to uncover expense patterns, vendor relationships, and GST compliance opportunities for an AI-powered accounting platform. The analysis combines systematic data cleaning, statistical trend analysis, and machine learning-based vendor segmentation to deliver actionable insights for CFOs and finance teams.
 
 **Key Results:**
 - Identified and resolved 8 critical data quality issues

@@ -192,12 +192,11 @@ color='#2E86AB'  # Change to any hex code
 **Documentation:**
 - Full README: `README_MAIN.md`
 - Technical docs: `README_TECHNICAL.md`
-- Code guide: `CODE_USAGE_GUIDE.md`
 - Jupyter guide: `NOTEBOOK_EXECUTION_GUIDE.txt`
 
 **Contact:**
-- GitHub Issues: [your-repo-url]
-- Email: [your-email]
+- GitHub Issues: [[your-repo-url](https://github.com/CELINE-CARVALHO/Purchase-Invoice-Analysis)]
+- Email: [carvalhoceline2105@gmail.com]
 
 ---
 
@@ -211,10 +210,8 @@ pip install pandas numpy matplotlib seaborn scikit-learn openpyxl && python3 mai
 
 ---
 
-**Last Updated:** February 7, 2026  
+**Last Updated:** February 8, 2026  
 **Status:** Production Ready  
 **License:** Educational Use Only
 
 ---
-
-That's all you need to get started!
