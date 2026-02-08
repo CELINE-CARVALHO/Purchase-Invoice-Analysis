@@ -736,6 +736,3 @@ jupyter notebook
 
 ---
 
-For questions or feedback, please contact the project lead or refer to the documentation files.
-
-**Thank you for reviewing this analysis!**
